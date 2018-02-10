@@ -10,9 +10,9 @@ int printMenu()
 	return choice;
 }
 
-void decision(int choice, FILE *infile, record *data, node **pList)
+void decision(int choice, FILE *infile, Record *data, Node **pList)
 {
-	record newRecord = { "A","a","a","a","a",1,1,1 };
+	Record newRecord = { "A","a","a","a","a",1,1,1 };
 	switch (choice)
 	{
 	case 1:
@@ -30,7 +30,8 @@ void decision(int choice, FILE *infile, record *data, node **pList)
 
 	case 3:
 	{
-		makeDecision(&(*pList));
+		// Display by artist or display every song.
+		makeDecision(&(*pList)); 
 		break;
 	}
 
@@ -82,31 +83,27 @@ void decision(int choice, FILE *infile, record *data, node **pList)
 		break;
 	}
 
-
-
 	default: printMenu();
 		break;
 	}
 }
 
-void load(node **pList, FILE *infile)
+void load(Node **pList, FILE *infile)
 {
 	printf("loading \n");
-	record newRecord = {"A","a","a","a","a",1,1,1 };
+	Record newRecord = {"A","a","a","a","a",1,1,1 };
 
 	stringTok(&newRecord,&(*pList),infile);
-	
 }
-
 
 void runApp()
 {
 	FILE *infile;
 	infile = fopen("musicPlayList.csv", "r");
 
-	int choice = 0;
-	record data[] = { NULL, NULL, NULL };
-	node *pList = NULL;
+	int choice;
+	Record data[] = { NULL, NULL, NULL };
+	Node *pList = NULL;
 
 	choice = printMenu();
 	
@@ -116,14 +113,11 @@ void runApp()
 		decision(choice, infile, data, &pList);
 		choice = printMenu();
 	}
-
-		exit(1);
-
+	exit(1);
 }
 
-void store(FILE *outfile, node *pList)
+void store(FILE *outfile, Node *pList)
 {
-
 	while (pList != NULL)
 	{
 		for (int i = 0; pList != NULL; i++)
@@ -132,7 +126,6 @@ void store(FILE *outfile, node *pList)
 			{
 				fprintf(outfile, pList->Data->Artist);
 				fprintf(outfile, ",");
-				
 			}
 
 			else if (i == 1)
@@ -174,10 +167,9 @@ void store(FILE *outfile, node *pList)
 		}
 		pList = pList->pNext;
 	}
-
 }
 
-void display(node *pHead)
+void display(Node *pHead)
 {
 	printf(" \n");
 
@@ -196,10 +188,9 @@ void display(node *pHead)
 
 }
 
-void insert(node **pHead, record *newRecord)
+void insert(Node **pHead, Record *newRecord)
 {
-
-	node *pNew = makeNode(newRecord);
+	Node *pNew = makeNode(newRecord);
 
 	char scannedData[100] = { NULL };
 	int scannedIntegers = 0;
@@ -240,12 +231,11 @@ void insert(node **pHead, record *newRecord)
 	pNew->pNext = *pHead;
 	(*pHead)->pPrev = pNew;
 	*pHead = pNew;
-
 }
 
-void removeSong(node *pHead)
+void removeSong(Node *pHead)
 {
-	record newRecord = { "A","a","a","a","a",1,1,1 };
+	Record newRecord = { "A","a","a","a","a",1,1,1 };
 	char artistName[100] = { NULL };
 	char newString[100] = { NULL };
 	int input = 0, newRating = 0;
@@ -255,7 +245,6 @@ void removeSong(node *pHead)
 
 	while (pHead != NULL)
 	{
-
 		if (strcmp(newString, pHead->Data->Artist) == 0)
 		{
 			printf("Artist: %s \n", pHead->Data->Artist);
@@ -272,14 +261,13 @@ void removeSong(node *pHead)
 
 			if (input == 1)
 			{
-				node *pTemp = makeNode(&newRecord);
-				node *pPrevv = makeNode(&newRecord);
+				Node *pTemp = makeNode(&newRecord);
+				Node *pPrevv = makeNode(&newRecord);
 				pPrevv = pHead->pPrev;
 				pTemp = pHead->pNext;
 
 				pTemp->pPrev = pPrevv;
 				pPrevv->pNext = pTemp;
-
 
 				free(pHead);
 
@@ -290,7 +278,7 @@ void removeSong(node *pHead)
 	}
 }
 
-void edit(node *pHead)
+void edit(Node *pHead)
 {
 	char decision[100] = { NULL };
 	int yes = 1, no = 0;
@@ -379,7 +367,7 @@ void sort()
 
 }
 
-void rate(node *pHead)
+void rate(Node *pHead)
 {
 	char artistName[100] = { NULL };
 	char newString[100] = { NULL };
@@ -418,14 +406,13 @@ void rate(node *pHead)
 	}
 }
 
-void play(node *pHead, record *newRecord)
+void play(Node *pHead, Record *newRecord)
 {
 	char newString[100] = { NULL };
 	int playing = 0;
 
 	printf("Please enter the Artists name (case sensetive!) \n");
 	scanf(" %s", newString);
-
 
 	while (pHead != NULL)
 	{
@@ -457,48 +444,44 @@ void play(node *pHead, record *newRecord)
 
 }
 
-
 void shuffle()
 {
 
 }
 
-void quit(node **pList, FILE *infile)
+void quit(Node **pList, FILE *infile)
 {
 	load(&(*pList), infile);
 	exit(0);
 }
 
 
-node *makeNode(record *newRecord)
+Node *makeNode(Record *newRecord)
 {
-	node *newNode = NULL;
-	newNode = (node *)malloc(sizeof(node));
+	Node *newNode = NULL;
+	newNode = (Node*)malloc(sizeof(Node));
 
 	if (newNode != NULL)
 	{
 		newNode->pNext = NULL;
 		newNode->pPrev = NULL;
-		newNode->Data = (record *)malloc(sizeof(record));
+		newNode->Data = (Record*)malloc(sizeof(Record));
 		initalizeRecord(newRecord, newNode);
 	}
-
 	return newNode;
 }
 
-void stringTok(record *newRecord, node **pList, FILE *infile)
+void stringTok(Record *newRecord, Node **pList, FILE *infile)
 {
 	char delimiter[2] = ",";
 	char *tok = "";
 	char stringLine[2000] = "";
 	int k = 0, i = 0;
 
-
 	while (fgets(stringLine, 100, infile) != NULL)
 	{
-		
 		tok = strtok(stringLine, delimiter);
-		node *inputRecord = makeNode(newRecord);
+		Node *inputRecord = makeNode(newRecord);
 		k = 0;
 
 		for (int j = 0; tok != NULL; j++)
@@ -562,9 +545,9 @@ void stringTok(record *newRecord, node **pList, FILE *infile)
 	printf("Loaded! \n");
 }
 
-void insertAtFront(node **pList, record *newRecord)
+void insertAtFront(Node **pList, Record *newRecord)
 {
-	node *pMem = NULL;
+	Node *pMem = NULL;
 
 	pMem = makeNode(newRecord);
 
@@ -584,13 +567,9 @@ void insertAtFront(node **pList, record *newRecord)
 			*pList = pMem;
 		}
 	}
-
-
 }
 
-
-
-void initalizeRecord(record *newRecord, node *newNode)
+void initalizeRecord(Record *newRecord, Node *newNode)
 {
 	newNode->Data->Rating = newRecord->Rating;
 	strcpy(newNode->Data->Album, newRecord->Album);
@@ -601,7 +580,8 @@ void initalizeRecord(record *newRecord, node *newNode)
 	newNode->Data->timesPlayed = newRecord->timesPlayed;
 }
 
-void makeDecision(node **pList)
+// By artist or all songs.
+void makeDecision(Node **pList)
 {
 	int decision = 0 ;
 	char *artistName = NULL;
@@ -618,10 +598,9 @@ void makeDecision(node **pList)
 	{
 		getArtist(artistName, *pList);
 	}
-
 }
 
-void getArtist(char artistName[], node *pHead)
+void getArtist(char artistName[], Node *pHead)
 {
 	char newString[100] = { artistName };
 	int input = 0;
