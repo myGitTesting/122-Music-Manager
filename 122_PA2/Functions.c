@@ -455,7 +455,6 @@ void quit(Node **pList, FILE *infile)
 	exit(0);
 }
 
-
 Node *makeNode(Record *newRecord)
 {
 	Node *newNode = NULL;
